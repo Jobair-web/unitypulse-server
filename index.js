@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { connectDB } from "./src/db.js";
 import eventsRouter from "./src/routes/events.js";
 import joinedRouter from "./src/routes/joined.js";
+import { authCheck } from "./src/middleware/verifyJwt.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,9 @@ app.use(express.json({ limit: "100kb" }));
 app.get("/", (_req, res) => {
   res.json({ name: "UnityPulse API", status: "running" });
 });
+
+// Debug helper: open /api/auth-check on the live server to test the JWT setup
+app.get("/api/auth-check", authCheck);
 
 // Lazy, cached DB connection (works locally and on serverless hosts)
 app.use(async (req, _res, next) => {
